@@ -1,10 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>后台管理系统(springMVC+spring+Mybatis)总结</title>
+    <url>/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/%E5%95%86%E5%93%81%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F(springMVC+spring+Mybatis)%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<h4 id="环境情况："><a href="#环境情况：" class="headerlink" title="环境情况："></a>环境情况：</h4><p>基本架构：</p>
+<h6 id="后台："><a href="#后台：" class="headerlink" title="后台："></a>后台：</h6><p>ssm：springMVC+spring+Mybatis<br>附加功能框架：spring security</p>
+<h6 id="前端："><a href="#前端：" class="headerlink" title="前端："></a>前端：</h6><p>AdminLTE构建基本页面</p>
+<h4 id="项目工程基本结构图："><a href="#项目工程基本结构图：" class="headerlink" title="项目工程基本结构图："></a>项目工程基本结构图：</h4><p><img src="https://img-blog.csdnimg.cn/202002162057081.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxOTQzODY3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<a id="more"></a>
+<h4 id="准备工作："><a href="#准备工作：" class="headerlink" title="准备工作："></a>准备工作：</h4><p>首先建立Maven父工程：ssm，接下来建立五个子模块：<br>dao：持久层<br>domain：实体类<br>service：业务层<br>utils：工具类<br>web：表现层(内含Controller，负责对前端的请求进行接收和处理后的数据返回)</p>
+<p>接着，整合ssm框架<br>整合完毕之后，就在项目中形成了web-service-dao的三层架构，实现各自功能与处理的分离</p>
+<h4 id="基本功能实现概述："><a href="#基本功能实现概述：" class="headerlink" title="基本功能实现概述："></a>基本功能实现概述：</h4><h5 id="基于Spring-Security进行用户登录与安全验证"><a href="#基于Spring-Security进行用户登录与安全验证" class="headerlink" title="基于Spring Security进行用户登录与安全验证"></a>基于Spring Security进行用户登录与安全验证</h5><p>Spring Security 是 Spring 项目组中用来提供安全认证服务的框架</p>
+<h5 id="实现产品和产品订单的基本管理-CRUD"><a href="#实现产品和产品订单的基本管理-CRUD" class="headerlink" title="实现产品和产品订单的基本管理(CRUD)"></a>实现产品和产品订单的基本管理(CRUD)</h5><p><strong>思路分析</strong>：</p>
+<h6 id="1-产品管理："><a href="#1-产品管理：" class="headerlink" title="1.产品管理："></a><strong>1</strong>.<strong>产品管理</strong>：</h6><p>以产品查询为例：web层中的Controller接收到前端传递的请求，将请求交给service层处理，service又通过dao层，与数据库交互，得到所需的数据<br>并逆序传递到Controller中，Controller进行将数据传递到 jsp页面中，最后将结果在前端页面中展示，完成查询。<br>其他的几种操作思路流程大致相同，不同之处在于持久层与数据库交互时执行不同的操作的 sql语句</p>
+<h6 id="2-订单管理："><a href="#2-订单管理：" class="headerlink" title="2.订单管理："></a><strong>2</strong>.<strong>订单管理</strong>：</h6><p>与产品查询思路相似</p>
+<h5 id="实现用户以及对应的角色及权限管理-包含用户和角色的CRUD和对应的用户角色权限关联操作，即为对应用户添加角色与权限"><a href="#实现用户以及对应的角色及权限管理-包含用户和角色的CRUD和对应的用户角色权限关联操作，即为对应用户添加角色与权限" class="headerlink" title="实现用户以及对应的角色及权限管理(包含用户和角色的CRUD和对应的用户角色权限关联操作，即为对应用户添加角色与权限)"></a>实现用户以及对应的角色及权限管理(包含用户和角色的CRUD和对应的用户角色权限关联操作，即为对应用户添加角色与权限)</h5><p><strong>思路分析：</strong></p>
+<h6 id="1-基本管理：实现用户，角色，权限的单独管理"><a href="#1-基本管理：实现用户，角色，权限的单独管理" class="headerlink" title="1.基本管理：实现用户，角色，权限的单独管理"></a><strong>1.基本管理</strong>：实现用户，角色，权限的单独管理</h6><p>与上述产品的基本管理类似，不再赘述</p>
+<h6 id="2-用户与角色，角色与权限之间的关联操作："><a href="#2-用户与角色，角色与权限之间的关联操作：" class="headerlink" title="2.用户与角色，角色与权限之间的关联操作："></a><strong>2.用户与角色</strong>，角色与权限之间的关联操作：</h6><p>例如为‘xxx’用户赋予特定的角色(例如管理员角色ADMIN)，从而使此用户获得此角色对应的权限(例如管理员权限)</p>
+<p>在Controller接收到前端请求之后，同样依次交给service和Dao，和数据库交互之后再将数据返回，最后展示在页面上。和前面不同之处在于，和数据交互时，不再是简单的单表增删改查，而是多表之间的关联操作，这里用到多表之间的中间表来关联对应的两张表</p>
+<p>例如：给指定用户‘u1’，添加角色和对应的权限，首先要为用户添加角色，首先将查询此用户当前可以添加的角色集合(即不可重复添加已有角色)，点击添加按钮后则显示出当前可添加的角色列表，然后选择完毕后再次发出请求，Mybatis代理对象在底层与数据库进行交互，完成角色的添加操作，而给角色添加权限的操作也是类似的思路，实现用户的详细信息展示时，也是通过多表关联的操作(关联查询)将用户的对应角色，权限信息对应进行展示</p>
+<h5 id="使用Spring-Security实现用户权限的基本管理与操作-根据不同权限级别，用户可执行的操作不同，比如：只有管理员才能更改其他用户的角色与对应的权限信息，或者是：对应管理员才能实现权限管理与后面的访问历史记录进行监控与查看"><a href="#使用Spring-Security实现用户权限的基本管理与操作-根据不同权限级别，用户可执行的操作不同，比如：只有管理员才能更改其他用户的角色与对应的权限信息，或者是：对应管理员才能实现权限管理与后面的访问历史记录进行监控与查看" class="headerlink" title="使用Spring Security实现用户权限的基本管理与操作(根据不同权限级别，用户可执行的操作不同，比如：只有管理员才能更改其他用户的角色与对应的权限信息，或者是：对应管理员才能实现权限管理与后面的访问历史记录进行监控与查看)"></a>使用Spring Security实现用户权限的基本管理与操作(根据不同权限级别，用户可执行的操作不同，比如：只有管理员才能更改其他用户的角色与对应的权限信息，或者是：对应管理员才能实现权限管理与后面的访问历史记录进行监控与查看)</h5><p><strong>思路分析：</strong></p>
+<h6 id="1-通过Spring-Security实现方法级权限控制，用户权限不足时无法使用对应功能而跳转到权限不足的页面"><a href="#1-通过Spring-Security实现方法级权限控制，用户权限不足时无法使用对应功能而跳转到权限不足的页面" class="headerlink" title="1.通过Spring Security实现方法级权限控制，用户权限不足时无法使用对应功能而跳转到权限不足的页面"></a><strong>1</strong>.通过Spring Security实现方法级权限控制，用户权限不足时无法使用对应功能而跳转到权限不足的页面</h6><p>由于页面中的各个功能在Controller中都对应有具体的实现方法,所以只要控制了用户对于对应方法的调用权限，即实现了用户对于功能使用的权限管理<br>Spring Security在方法级别的权限控制上<br>支持三种类型的注解，JSR-250注解、@Secured注解和支持表达式的注解<br>根据需求使用即可</p>
+<h6 id="2-通过Spring-Security实现页面端的权限控制，用户不具备对应的权限时，在页面中只显示当前权限所能执行的操作"><a href="#2-通过Spring-Security实现页面端的权限控制，用户不具备对应的权限时，在页面中只显示当前权限所能执行的操作" class="headerlink" title="2.通过Spring Security实现页面端的权限控制，用户不具备对应的权限时，在页面中只显示当前权限所能执行的操作"></a><strong>2</strong>.通过Spring Security实现页面端的权限控制，用户不具备对应的权限时，在页面中只显示当前权限所能执行的操作</h6><p>例如：普通只具备单一普通管理员权限角色‘USER’的用户在页面中只能看见普通的产品，订单管理和用户管理等功能按钮<br>而具备超级管理员角色的超级管理员用户除了基本的功能外，还能够使用用户权限管理，用户操作历史记录监控等功能</p>
+<h5 id="使用Spring-AOP实现后台管理系统的历史记录功能，从而实现后台管理系统用户操作监控的功能"><a href="#使用Spring-AOP实现后台管理系统的历史记录功能，从而实现后台管理系统用户操作监控的功能" class="headerlink" title="使用Spring AOP实现后台管理系统的历史记录功能，从而实现后台管理系统用户操作监控的功能"></a>使用Spring AOP实现后台管理系统的历史记录功能，从而实现后台管理系统用户操作监控的功能</h5><p><strong>思路分析：</strong><br>创建一个切面类，配置切入点表达式，对Controller中的所有方法进行监控操作，因为所有功能实现都要在Controller中进行处理，也就是对用户在系统中执行的所有操作进行了一个监控<br>具体包括监控用户，用户的ip，执行的操作及对应的执行时间从而达到操作记录监控的效果</p>
+<h5 id="除此之外，使用了pagehelper来实现上面的相关的分页查询功能"><a href="#除此之外，使用了pagehelper来实现上面的相关的分页查询功能" class="headerlink" title="除此之外，使用了pagehelper来实现上面的相关的分页查询功能"></a>除此之外，使用了pagehelper来实现上面的相关的分页查询功能</h5><p>当数据量特别大时，分页数据展示可以减轻服务器的压力，同时也给用户较好的页面操作体验<br>…后续有待增加</p>
+<p><a href="https://github.com/lyq666666/Commodity-background-management-system" target="_blank" rel="noopener">项目源码Github地址在此处</a></p>
+]]></content>
+      <categories>
+        <category>项目总结</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Hello World</title>
-    <url>/uncategorized/hello-world/</url>
+    <url>/%E6%97%A5%E5%B8%B8/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><a id="more"></a>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
 
 <p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
 <h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
@@ -17,5 +48,8 @@
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 ]]></content>
+      <categories>
+        <category>日常</category>
+      </categories>
   </entry>
 </search>

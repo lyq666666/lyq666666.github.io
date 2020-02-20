@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://lyq666666.github.io').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"flat"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="环境情况：基本架构： 后台：ssm：springMVC+spring+Mybatis附加功能框架：spring security 前端：AdminLTE构建基本页面 项目工程基本结构图：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="后台管理系统(springMVC+spring+Mybatis)总结">
+<meta property="og:url" content="https://lyq666666.github.io/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/%E5%95%86%E5%93%81%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F(springMVC+spring+Mybatis)%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="味醇style">
+<meta property="og:description" content="环境情况：基本架构： 后台：ssm：springMVC+spring+Mybatis附加功能框架：spring security 前端：AdminLTE构建基本页面 项目工程基本结构图：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/202002162057081.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxOTQzODY3,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-02-20T06:04:01.000Z">
+<meta property="article:modified_time" content="2020-02-20T07:09:19.736Z">
+<meta property="article:author" content="味~醇">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/202002162057081.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxOTQzODY3,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="https://lyq666666.github.io/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/%E5%95%86%E5%93%81%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F(springMVC+spring+Mybatis)%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>后台管理系统(springMVC+spring+Mybatis)总结 | 味醇style</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">味醇style</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+
+  <a href="https://github.com/lyq666666" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lyq666666.github.io/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/%E5%95%86%E5%93%81%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F(springMVC+spring+Mybatis)%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="味~醇">
+      <meta itemprop="description" content="打碎沉默的都是无与伦比的惊艳">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="味醇style">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          后台管理系统(springMVC+spring+Mybatis)总结
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-02-20 14:04:01 / 修改时间：15:09:19" itemprop="dateCreated datePublished" datetime="2020-02-20T14:04:01+08:00">2020-02-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" itemprop="url" rel="index">
+                    <span itemprop="name">项目总结</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="热度" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/%E5%95%86%E5%93%81%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F(springMVC+spring+Mybatis)%E6%80%BB%E7%BB%93/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/%E5%95%86%E5%93%81%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F(springMVC+spring+Mybatis)%E6%80%BB%E7%BB%93/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="环境情况："><a href="#环境情况：" class="headerlink" title="环境情况："></a>环境情况：</h4><p>基本架构：</p>
+<h6 id="后台："><a href="#后台：" class="headerlink" title="后台："></a>后台：</h6><p>ssm：springMVC+spring+Mybatis<br>附加功能框架：spring security</p>
+<h6 id="前端："><a href="#前端：" class="headerlink" title="前端："></a>前端：</h6><p>AdminLTE构建基本页面</p>
+<h4 id="项目工程基本结构图："><a href="#项目工程基本结构图：" class="headerlink" title="项目工程基本结构图："></a>项目工程基本结构图：</h4><p><img src="https://img-blog.csdnimg.cn/202002162057081.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxOTQzODY3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<a id="more"></a>
+<h4 id="准备工作："><a href="#准备工作：" class="headerlink" title="准备工作："></a>准备工作：</h4><p>首先建立Maven父工程：ssm，接下来建立五个子模块：<br>dao：持久层<br>domain：实体类<br>service：业务层<br>utils：工具类<br>web：表现层(内含Controller，负责对前端的请求进行接收和处理后的数据返回)</p>
+<p>接着，整合ssm框架<br>整合完毕之后，就在项目中形成了web-service-dao的三层架构，实现各自功能与处理的分离</p>
+<h4 id="基本功能实现概述："><a href="#基本功能实现概述：" class="headerlink" title="基本功能实现概述："></a>基本功能实现概述：</h4><h5 id="基于Spring-Security进行用户登录与安全验证"><a href="#基于Spring-Security进行用户登录与安全验证" class="headerlink" title="基于Spring Security进行用户登录与安全验证"></a>基于Spring Security进行用户登录与安全验证</h5><p>Spring Security 是 Spring 项目组中用来提供安全认证服务的框架</p>
+<h5 id="实现产品和产品订单的基本管理-CRUD"><a href="#实现产品和产品订单的基本管理-CRUD" class="headerlink" title="实现产品和产品订单的基本管理(CRUD)"></a>实现产品和产品订单的基本管理(CRUD)</h5><p><strong>思路分析</strong>：</p>
+<h6 id="1-产品管理："><a href="#1-产品管理：" class="headerlink" title="1.产品管理："></a><strong>1</strong>.<strong>产品管理</strong>：</h6><p>以产品查询为例：web层中的Controller接收到前端传递的请求，将请求交给service层处理，service又通过dao层，与数据库交互，得到所需的数据<br>并逆序传递到Controller中，Controller进行将数据传递到 jsp页面中，最后将结果在前端页面中展示，完成查询。<br>其他的几种操作思路流程大致相同，不同之处在于持久层与数据库交互时执行不同的操作的 sql语句</p>
+<h6 id="2-订单管理："><a href="#2-订单管理：" class="headerlink" title="2.订单管理："></a><strong>2</strong>.<strong>订单管理</strong>：</h6><p>与产品查询思路相似</p>
+<h5 id="实现用户以及对应的角色及权限管理-包含用户和角色的CRUD和对应的用户角色权限关联操作，即为对应用户添加角色与权限"><a href="#实现用户以及对应的角色及权限管理-包含用户和角色的CRUD和对应的用户角色权限关联操作，即为对应用户添加角色与权限" class="headerlink" title="实现用户以及对应的角色及权限管理(包含用户和角色的CRUD和对应的用户角色权限关联操作，即为对应用户添加角色与权限)"></a>实现用户以及对应的角色及权限管理(包含用户和角色的CRUD和对应的用户角色权限关联操作，即为对应用户添加角色与权限)</h5><p><strong>思路分析：</strong></p>
+<h6 id="1-基本管理：实现用户，角色，权限的单独管理"><a href="#1-基本管理：实现用户，角色，权限的单独管理" class="headerlink" title="1.基本管理：实现用户，角色，权限的单独管理"></a><strong>1.基本管理</strong>：实现用户，角色，权限的单独管理</h6><p>与上述产品的基本管理类似，不再赘述</p>
+<h6 id="2-用户与角色，角色与权限之间的关联操作："><a href="#2-用户与角色，角色与权限之间的关联操作：" class="headerlink" title="2.用户与角色，角色与权限之间的关联操作："></a><strong>2.用户与角色</strong>，角色与权限之间的关联操作：</h6><p>例如为‘xxx’用户赋予特定的角色(例如管理员角色ADMIN)，从而使此用户获得此角色对应的权限(例如管理员权限)</p>
+<p>在Controller接收到前端请求之后，同样依次交给service和Dao，和数据库交互之后再将数据返回，最后展示在页面上。和前面不同之处在于，和数据交互时，不再是简单的单表增删改查，而是多表之间的关联操作，这里用到多表之间的中间表来关联对应的两张表</p>
+<p>例如：给指定用户‘u1’，添加角色和对应的权限，首先要为用户添加角色，首先将查询此用户当前可以添加的角色集合(即不可重复添加已有角色)，点击添加按钮后则显示出当前可添加的角色列表，然后选择完毕后再次发出请求，Mybatis代理对象在底层与数据库进行交互，完成角色的添加操作，而给角色添加权限的操作也是类似的思路，实现用户的详细信息展示时，也是通过多表关联的操作(关联查询)将用户的对应角色，权限信息对应进行展示</p>
+<h5 id="使用Spring-Security实现用户权限的基本管理与操作-根据不同权限级别，用户可执行的操作不同，比如：只有管理员才能更改其他用户的角色与对应的权限信息，或者是：对应管理员才能实现权限管理与后面的访问历史记录进行监控与查看"><a href="#使用Spring-Security实现用户权限的基本管理与操作-根据不同权限级别，用户可执行的操作不同，比如：只有管理员才能更改其他用户的角色与对应的权限信息，或者是：对应管理员才能实现权限管理与后面的访问历史记录进行监控与查看" class="headerlink" title="使用Spring Security实现用户权限的基本管理与操作(根据不同权限级别，用户可执行的操作不同，比如：只有管理员才能更改其他用户的角色与对应的权限信息，或者是：对应管理员才能实现权限管理与后面的访问历史记录进行监控与查看)"></a>使用Spring Security实现用户权限的基本管理与操作(根据不同权限级别，用户可执行的操作不同，比如：只有管理员才能更改其他用户的角色与对应的权限信息，或者是：对应管理员才能实现权限管理与后面的访问历史记录进行监控与查看)</h5><p><strong>思路分析：</strong></p>
+<h6 id="1-通过Spring-Security实现方法级权限控制，用户权限不足时无法使用对应功能而跳转到权限不足的页面"><a href="#1-通过Spring-Security实现方法级权限控制，用户权限不足时无法使用对应功能而跳转到权限不足的页面" class="headerlink" title="1.通过Spring Security实现方法级权限控制，用户权限不足时无法使用对应功能而跳转到权限不足的页面"></a><strong>1</strong>.通过Spring Security实现方法级权限控制，用户权限不足时无法使用对应功能而跳转到权限不足的页面</h6><p>由于页面中的各个功能在Controller中都对应有具体的实现方法,所以只要控制了用户对于对应方法的调用权限，即实现了用户对于功能使用的权限管理<br>Spring Security在方法级别的权限控制上<br>支持三种类型的注解，JSR-250注解、@Secured注解和支持表达式的注解<br>根据需求使用即可</p>
+<h6 id="2-通过Spring-Security实现页面端的权限控制，用户不具备对应的权限时，在页面中只显示当前权限所能执行的操作"><a href="#2-通过Spring-Security实现页面端的权限控制，用户不具备对应的权限时，在页面中只显示当前权限所能执行的操作" class="headerlink" title="2.通过Spring Security实现页面端的权限控制，用户不具备对应的权限时，在页面中只显示当前权限所能执行的操作"></a><strong>2</strong>.通过Spring Security实现页面端的权限控制，用户不具备对应的权限时，在页面中只显示当前权限所能执行的操作</h6><p>例如：普通只具备单一普通管理员权限角色‘USER’的用户在页面中只能看见普通的产品，订单管理和用户管理等功能按钮<br>而具备超级管理员角色的超级管理员用户除了基本的功能外，还能够使用用户权限管理，用户操作历史记录监控等功能</p>
+<h5 id="使用Spring-AOP实现后台管理系统的历史记录功能，从而实现后台管理系统用户操作监控的功能"><a href="#使用Spring-AOP实现后台管理系统的历史记录功能，从而实现后台管理系统用户操作监控的功能" class="headerlink" title="使用Spring AOP实现后台管理系统的历史记录功能，从而实现后台管理系统用户操作监控的功能"></a>使用Spring AOP实现后台管理系统的历史记录功能，从而实现后台管理系统用户操作监控的功能</h5><p><strong>思路分析：</strong><br>创建一个切面类，配置切入点表达式，对Controller中的所有方法进行监控操作，因为所有功能实现都要在Controller中进行处理，也就是对用户在系统中执行的所有操作进行了一个监控<br>具体包括监控用户，用户的ip，执行的操作及对应的执行时间从而达到操作记录监控的效果</p>
+<h5 id="除此之外，使用了pagehelper来实现上面的相关的分页查询功能"><a href="#除此之外，使用了pagehelper来实现上面的相关的分页查询功能" class="headerlink" title="除此之外，使用了pagehelper来实现上面的相关的分页查询功能"></a>除此之外，使用了pagehelper来实现上面的相关的分页查询功能</h5><p>当数据量特别大时，分页数据展示可以减轻服务器的压力，同时也给用户较好的页面操作体验<br>…后续有待增加</p>
+<p><a href="https://github.com/lyq666666/Commodity-background-management-system" target="_blank" rel="noopener">项目源码Github地址在此处</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>味~醇
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://lyq666666.github.io/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/%E5%95%86%E5%93%81%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F(springMVC+spring+Mybatis)%E6%80%BB%E7%BB%93/" title="后台管理系统(springMVC+spring+Mybatis)总结">https://lyq666666.github.io/项目总结/商品后台管理系统(springMVC+spring+Mybatis)总结/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E6%97%A5%E5%B8%B8/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#环境情况："><span class="nav-number">1.</span> <span class="nav-text">环境情况：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#后台："><span class="nav-number">1.0.1.</span> <span class="nav-text">后台：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#前端："><span class="nav-number">1.0.2.</span> <span class="nav-text">前端：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#项目工程基本结构图："><span class="nav-number">2.</span> <span class="nav-text">项目工程基本结构图：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#准备工作："><span class="nav-number">3.</span> <span class="nav-text">准备工作：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基本功能实现概述："><span class="nav-number">4.</span> <span class="nav-text">基本功能实现概述：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#基于Spring-Security进行用户登录与安全验证"><span class="nav-number">4.1.</span> <span class="nav-text">基于Spring Security进行用户登录与安全验证</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#实现产品和产品订单的基本管理-CRUD"><span class="nav-number">4.2.</span> <span class="nav-text">实现产品和产品订单的基本管理(CRUD)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-产品管理："><span class="nav-number">4.2.1.</span> <span class="nav-text">1.产品管理：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-订单管理："><span class="nav-number">4.2.2.</span> <span class="nav-text">2.订单管理：</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#实现用户以及对应的角色及权限管理-包含用户和角色的CRUD和对应的用户角色权限关联操作，即为对应用户添加角色与权限"><span class="nav-number">4.3.</span> <span class="nav-text">实现用户以及对应的角色及权限管理(包含用户和角色的CRUD和对应的用户角色权限关联操作，即为对应用户添加角色与权限)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-基本管理：实现用户，角色，权限的单独管理"><span class="nav-number">4.3.1.</span> <span class="nav-text">1.基本管理：实现用户，角色，权限的单独管理</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-用户与角色，角色与权限之间的关联操作："><span class="nav-number">4.3.2.</span> <span class="nav-text">2.用户与角色，角色与权限之间的关联操作：</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用Spring-Security实现用户权限的基本管理与操作-根据不同权限级别，用户可执行的操作不同，比如：只有管理员才能更改其他用户的角色与对应的权限信息，或者是：对应管理员才能实现权限管理与后面的访问历史记录进行监控与查看"><span class="nav-number">4.4.</span> <span class="nav-text">使用Spring Security实现用户权限的基本管理与操作(根据不同权限级别，用户可执行的操作不同，比如：只有管理员才能更改其他用户的角色与对应的权限信息，或者是：对应管理员才能实现权限管理与后面的访问历史记录进行监控与查看)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-通过Spring-Security实现方法级权限控制，用户权限不足时无法使用对应功能而跳转到权限不足的页面"><span class="nav-number">4.4.1.</span> <span class="nav-text">1.通过Spring Security实现方法级权限控制，用户权限不足时无法使用对应功能而跳转到权限不足的页面</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-通过Spring-Security实现页面端的权限控制，用户不具备对应的权限时，在页面中只显示当前权限所能执行的操作"><span class="nav-number">4.4.2.</span> <span class="nav-text">2.通过Spring Security实现页面端的权限控制，用户不具备对应的权限时，在页面中只显示当前权限所能执行的操作</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用Spring-AOP实现后台管理系统的历史记录功能，从而实现后台管理系统用户操作监控的功能"><span class="nav-number">4.5.</span> <span class="nav-text">使用Spring AOP实现后台管理系统的历史记录功能，从而实现后台管理系统用户操作监控的功能</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#除此之外，使用了pagehelper来实现上面的相关的分页查询功能"><span class="nav-number">4.6.</span> <span class="nav-text">除此之外，使用了pagehelper来实现上面的相关的分页查询功能</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="味~醇"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">味~醇</p>
+  <div class="site-description" itemprop="description">打碎沉默的都是无与伦比的惊艳</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lyq666666" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lyq666666" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://wbc666.blog.csdn.net/" title="CSDN → https:&#x2F;&#x2F;wbc666.blog.csdn.net&#x2F;" rel="noopener" target="_blank"><i class="fa fa-fw fa-meh-o"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">味~醇</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,192,255' opacity='0.8' zIndex='-1' count='120' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'antiIPLBPQosFQBOb0FfLo60-gzGzoHsz',
+      appKey: '3NiNpbvdExyM9ITJhglGKl9V',
+      placeholder: "评论一下",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: false,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: true,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
